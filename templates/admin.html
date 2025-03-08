@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %}Admin View{% endblock %}
+{% block page %}Admin View{% endblock %}
+
+{% block link%}
+    <ul id="nav-mobile" class="right">
+        <li><a href="/stats">Stats</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block content %} 
+      <main class="container" style="padding-top:100px">
+
+        
+        <form  method="GET" action="/admin">
+          <div class="row">
+            <div class="col m10 input-field">
+                <input class="blue-text" value="{{q}}" name="q" type="search" placeholder="Search">
+            </div>
+            <div class="col m2 input-field">
+              <div class="row">
+                <button type="submit" class="btn blue">
+                  <i class="material-icons">search</i>
+                </button>
+                <button type="button" onclick="q.value=''; this.form.submit()" class="btn blue">
+                  <i class="material-icons">close</i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+                <div class="row">
+                    <label>
+                    <input class="with-gap blue" name="done" type="radio" value="true" onchange="this.form.submit()" {{ "checked" if done=="true" }} />
+                    <span>Done</span>
+                </label>
+                <label>
+                    <input class="with-gap blue" name="done" type="radio" value="false" onchange="this.form.submit()" {{ "checked" if done=="false" }} />
+                    <span>Not Done</span>
+                </label>
+                <label>
+                    <input class="with-gap blue" name="done" type="radio" value="any" onchange="this.form.submit()" {{ "checked" if done=="any" }} />
+                    <span>Any</span>
+                </label>
+                </div>
+        </form>
+        
+        <table>
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Text</th>
+                <th>Done</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            {% for todo in todos %}
+            <tr>
+              <td>{{todo.id}}</td>
+              <td>{{todo.user.username}}</td>
+              <td>{{todo.text}}</td>
+              <td>{{todo.done}}</td>
+            </tr>
+            {% endfor %}
+ 
+          </tbody>
+        </table>
+
+        <div class="row">
+        
+            <ul class="pagination col s12 center">
+                {% if todos.prev_num %}
+                  <li class="waves-effect">
+                    <a href="{{ url_for('admin_page', page=todos.prev_num, q=q, done=done) }}"><i class="material-icons">chevron_left</i></a>
+                </li>
+                {% else %}
+                  <li class="disabled">
+                    <a href="#!"><i class="material-icons">chevron_left</i></a>
+                </li>
+                {% endif %}
+            
+                {% for page_num in todos.iter_pages() %}
+                    {% if page_num %}
+                        {% if todos.page == page_num %}
+                          <li class="active blue"><a href="#!">{{ page_num }}</a></li>
+                        {% else %}
+                          <li class="waves-effect"><a href="{{ url_for('admin_page', page=page_num, q=q, done=done) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="disabled"><a href="#!">...</a></li>
+                    {% endif %}
+                {% endfor %}
+            
+                {% if todos.has_next %}
+                  <li class="waves-effect">
+                    <a href="{{ url_for('admin_page', page=todos.next_num, q=q, done=done) }}"><i class="material-icons">chevron_right</i></a>
+                </li>
+                {% else %}
+                  <li class="disabled">
+                    <a href="#!"><i class="material-icons">chevron_right</i></a>
+                </li>
+                {% endif %}
+            </ul>
+            
+        </div>
+      </main>
+{% endblock %}

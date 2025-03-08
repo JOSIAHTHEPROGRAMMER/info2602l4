@@ -27,4 +27,41 @@
 {% endblock %}
 
 {% block content %} 
+
+<main class="container" style="padding-top: 75px">
+  <form name="addForm" class="card" method="POST" action="/createTodo">
+    <div class="card-content">
+      <span class="card-title">Create Todo</span>
+        <div class="input-field">
+          <input type="text" name="text" placeholder="Enter Todo Text" class="materialize-textarea">
+          <label for="text">Enter Todo Text</label>
+        </div>
+    </div>
+    <div class="card-actions">
+        <div class="row">
+          <div class="col sm12 m4 offset-m8">
+            <input class="btn blue right" type="submit" value="SAVE" />
+          </div>
+        </div>
+    </div>
+  </form>
+  <ul class="collection " id="result">
+    {% for todo in current_user.todos %}
+         <li class="collection-item">
+            <form class="row" method="POST" action="toggle/{{todo.id}}" >
+              <span class="card-title">{{todo.text}}
+                <label class="right">
+                  <input type="checkbox" name="done" onchange="this.form.submit()" {%  if todo.done %} checked {% endif %} />
+                  <span>Done</span>
+                </label>
+              </span>
+            </form>
+            <div class="row">
+              <a href="/editTodo/{{todo.id}}">EDIT</a>
+              <a href="/deleteTodo/{{todo.id}}">DELETE</a>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+</main>
 {% endblock %}
